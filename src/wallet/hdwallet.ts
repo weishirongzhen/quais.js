@@ -14,6 +14,7 @@ import { AllowedCoinType } from '../constants/index.js';
  */
 export interface NeuteredAddressInfo {
     pubKey: string;
+    priKey: string;
     address: string;
     account: number;
     index: number;
@@ -94,6 +95,10 @@ export abstract class AbstractHDWallet {
         return this._root.extendedKey;
     }
 
+    get hdWallet(): HDNodeWallet {
+        return this._root;
+    }
+
     /**
      * Derives the next valid address node for a specified account, starting index, and zone. The method ensures the
      * derived address belongs to the correct shard and ledger, as defined by the Quai blockchain specifications.
@@ -105,7 +110,7 @@ export abstract class AbstractHDWallet {
      * @returns {HDNodeWallet} - The derived HD node wallet containing a valid address for the specified zone.
      * @throws {Error} If a valid address for the specified zone cannot be derived within the allowed attempts.
      */
-    protected deriveNextAddressNode(
+    public deriveNextAddressNode(
         account: number,
         startingIndex: number,
         zone: Zone,
@@ -558,6 +563,7 @@ export abstract class AbstractHDWallet {
     ): NeuteredAddressInfo {
         const neuteredAddressInfo: NeuteredAddressInfo = {
             pubKey: addressNode.publicKey,
+            priKey: addressNode.privateKey,
             address: addressNode.address,
             account,
             index: addressNode.index,

@@ -161,13 +161,15 @@ export abstract class AbstractSigner<P extends null | Provider = null | Provider
     }
 
     async sendTransaction(tx: TransactionRequest): Promise<TransactionResponse> {
+        console.log('wtf inner txObj before pop ', JSON.stringify(tx));
         const provider = checkProvider(this, 'sendTransaction');
         const zone = await this.zoneFromAddress(addressFromTransactionRequest(tx));
         const pop = await this.populateQuaiTransaction(tx as QuaiTransactionRequest);
         const txObj = QuaiTransaction.from(pop);
-
+        console.log('wtf inner txObj after pop ', JSON.stringify(txObj));
         const sender = await this.getAddress();
         const signedTx = await this.signTransaction(txObj);
+        console.log('wtf inner sign tx', signedTx);
         return await provider.broadcastTransaction(zone, signedTx, sender);
     }
 
